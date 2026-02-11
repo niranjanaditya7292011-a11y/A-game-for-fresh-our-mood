@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>Click the Box Game</title>
-  <link rel="stylesheet" href="style.css">
   <style> 
     body {
   font-family: Arial, sans-serif;
@@ -22,6 +21,7 @@ h1 {
   margin: 20px auto;
   position: relative;
   background-color: white;
+   overflow: hidden;
 }
 
 #box {
@@ -29,10 +29,31 @@ h1 {
   height: 50px;
   background-color: red;
   position: absolute;
+  animation: moveBox 3s infinite alternate;
   cursor: pointer;
   border-radius: 8px;
+  motion-rotation: auto;
+
+}
+.move-box {
+  width: 100px;
+  position: absolute;
+  animation: moveAround 5s infinite linear;
+}
+/* Animation */
+@keyframes moveBox {
+     0%   { top: 50%; left: 50%; right:800% ; up :30%; down:60%;}
+  25%  { top: 50%; left: 80%; right:800% ;up :30%; down:60%; }
+  50%  { top: 80%; left: 80%; right:800% ;up :30%; down:60%; }
+  75%  { top: 80%; left: 50%;  right:800% ; up :30%; down:60%;}
+  100% { top: 50%; left: 50%; right:800% ;up :30%; down:60%;}
+  
 }
 
+/* Click effect */
+.box:active {
+    background: green;
+}
   </style>
 </head>
 <body>
@@ -40,9 +61,14 @@ h1 {
   <h1>🎯 Click the Box Game</h1>
   <p>Score: <span id="score">0</span></p>
 
+    <div class="game-area">
+        <div class="box"></div>
+    </div>
+
   <div id="gameArea">
     <div id="box"></div>
   </div>
+  
 
   <script>
     let score = 0;
