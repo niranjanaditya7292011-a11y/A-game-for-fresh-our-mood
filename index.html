@@ -1,56 +1,37 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Keyboard Game</title>
-  <link rel="stylesheet" href="style .css ">
+  <meta charset="UTF-8">
+  <title>Catch Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style .css">
 </head>
 <body>
 
-<h2>Dodge Game</h2>
+<h2>🎮 Catch the Box</h2>
 
-<div class="info">
-  ⏱ Time: <span id="time">0</span> |
-  ⭐ Score: <span id="score">0</span> |
-  🏆 High Score: <span id="highScore">0</span>
+<div id="info">
+  ⏱ Time: <span id="time">30</span>
+  ⭐ Score: <span id="score">0</span>
+  🏆 High: <span id="highScore">0</span>
 </div>
 
 <div id="game">
   <div id="player"></div>
+  <div id="target"></div>
 </div>
 
-<h3 id="gameOver">GAME OVER</h3>
-<button onclick="restart()">Restart</button>
-
-<audio id="hitSound" src="<!DOCTYPE html>
-<html>
-<head>
-  <title>Keyboard Game</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-<h2>Dodge Game</h2>
-
-<div class="info">
-  ⏱ Time: <span id="time">0</span> |
-  ⭐ Score: <span id="score">0</span> |
-  🏆 High Score: <span id="highScore">0</span>
+<div id="controls">
+  <button onclick="move('up')">⬆️</button><br>
+  <button onclick="move('left')">⬅️</button>
+  <button onclick="move('down')">⬇️</button>
+  <button onclick="move('right')">➡️</button>
 </div>
 
-<div id="game">
-  <div id="player"></div>
-</div>
+<button id="restart" onclick="restart()">🔁 Restart</button>
 
-<h3 id="gameOver">GAME OVER</h3>
-<button onclick="restart()">Restart</button>
-
-<audio src="https://www.soundjay.com/button/sounds/button-10.mp3"></audio>
+<audio id="hit" src="https://assets.mixkit.co/sfx/preview/mixkit-arcade-mechanical-bling-210.wav"></audio>
 
 <script src="script.js"></script>
-</body>
-</html>
- "></audio>
-
-<script src="script.js "></script>
 </body>
 </html>
