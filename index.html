@@ -1,95 +1,56 @@
- <!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html>
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>Click the Box Game</title>
-  <style> 
-    body {
-  font-family: Arial, sans-serif;
-  text-align: center;
-  background-color: #f0f8ff;
-}
-
-h1 {
-  color: #333;
-}
-
-#gameArea {
-  width: 500px;
-  height: 300px;
-  border: 2px solid #000;
-  margin: 20px auto;
-  position: relative;
-  background-color: white;
-   overflow: hidden;
-}
-
-#box {
-  width: 50px;
-  height: 50px;
-  background-color: red;
-  position: absolute;
-  animation: moveBox 3s infinite alternate;
-  cursor: pointer;
-  border-radius: 8px;
-  motion-rotation: auto;
-
-}
-.move-box {
-  width: 100px;
-  position: absolute;
-  animation: moveAround 5s infinite linear;
-}
-/* Animation */
-@keyframes moveBox {
-     0%   { top: 50%; left: 50%; right:800% ; up :30%; down:60%;}
-  25%  { top: 50%; left: 80%; right:800% ;up :30%; down:60%; }
-  50%  { top: 80%; left: 80%; right:800% ;up :30%; down:60%; }
-  75%  { top: 80%; left: 50%;  right:800% ; up :30%; down:60%;}
-  100% { top: 50%; left: 50%; right:800% ;up :30%; down:60%;}
-  
-}
-
-/* Click effect */
-.box:active {
-    background: green;
-}
-  </style>
+  <title>Keyboard Game</title>
+  <link rel="stylesheet" href="style .css ">
 </head>
 <body>
 
-  <h1>🎯 Click the Box Game</h1>
-  <p>Score: <span id="score">0</span></p>
+<h2>Dodge Game</h2>
 
-    <div class="game-area">
-        <div class="box"></div>
-    </div>
+<div class="info">
+  ⏱ Time: <span id="time">0</span> |
+  ⭐ Score: <span id="score">0</span> |
+  🏆 High Score: <span id="highScore">0</span>
+</div>
 
-  <div id="gameArea">
-    <div id="box"></div>
-  </div>
-  
+<div id="game">
+  <div id="player"></div>
+</div>
 
-  <script>
-    let score = 0;
-    const box = document.getElementById("box");
-    const scoreText = document.getElementById("score");
-    const gameArea = document.getElementById("gameArea");
+<h3 id="gameOver">GAME OVER</h3>
+<button onclick="restart()">Restart</button>
 
-    box.addEventListener("click", () => {
-      score++;
-      scoreText.textContent = score;
+<audio id="hitSound" src="<!DOCTYPE html>
+<html>
+<head>
+  <title>Keyboard Game</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-      const maxX = gameArea.clientWidth - box.clientWidth;
-      const maxY = gameArea.clientHeight - box.clientHeight;
+<h2>Dodge Game</h2>
 
-      const randomX = Math.random() * maxX;
-      const randomY = Math.random() * maxY;
+<div class="info">
+  ⏱ Time: <span id="time">0</span> |
+  ⭐ Score: <span id="score">0</span> |
+  🏆 High Score: <span id="highScore">0</span>
+</div>
 
-      box.style.left = randomX + "px";
-      box.style.top = randomY + "px";
-    });
-  </script>
+<div id="game">
+  <div id="player"></div>
+</div>
 
+<h3 id="gameOver">GAME OVER</h3>
+<button onclick="restart()">Restart</button>
+
+<audio src="https://www.soundjay.com/button/sounds/button-10.mp3"></audio>
+
+<script src="script.js"></script>
+</body>
+</html>
+ "></audio>
+
+<script src="script.js "></script>
 </body>
 </html>
