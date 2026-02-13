@@ -1,116 +1,136 @@
+ const game = document.getElementById("game");
 const player = document.getElementById("player");
-const enemy = document.querySelector(".enemy");
-const gameArea = document.getElementById("gameArea");
-
 const scoreEl = document.getElementById("score");
-const highScoreEl = document.getElementById("highScore");
-const healthBar = document.getElementById("healthBar");
-
-const gunSound = document.getElementById("gunSound");
-const outSound = document.getElementById("outSound");
+const healthEl = document.getElementById("health");
+const gameOverBox = document.getElementById("gameOver");
 
 let score = 0;
-let highScore = localStorage.getItem("highScore") || 0;
-let health = 100;
+let high = localStorage.getItem("high") || 0;
+let health = 3;
 let gameRunning = true;
+let keys = {};
 
-highScoreEl.innerText = highScore;
+document.addEventListener("keydown", e => keys[e.key] = true);
+document.addEventListener("keyup", e => keys[e.key] = false);
 
-// PLAYER MOVE (KEYBOARD)
-document.addEventListener("keydown", e => {
+function movePlayer() {
   if (!gameRunning) return;
   let x = player.offsetLeft;
   let y = player.offsetTop;
 
-  if (e.key === "ArrowLeft" && x > 0) player.style.left = x - 10 + "px";
-  if (e.key === "ArrowRight" && x < 290) player.style.left = x + 10 + "px";
-  if (e.key === "ArrowUp" && y > 0) player.style.top = y - 10 + "px";
-  if (e.key === "ArrowDown" && y < 390) player.style.top = y + 10 + "px";
-  if (e.key === " ") fireBullet();
-});
+  if (keys["ArrowLeft"] && x > 0) player.style.left = x - 4 + "px";
+  if (keys["ArrowRight"] && x < 290) player.style.left = x + 4 + "px";
+  if (keys["ArrowUp"] && y > 0) player.style.top = y - 4 + "px";
+  if (keys["ArrowDown"] && y < 390) player.style.top = y + 4 + "px";
+}
 
-// PLAYER FIRE
-function fireBullet() {
-  const bullet = document.createElement("div");
+setInterval(movePlayer, 20);
+
+document.getElementById("fireBtn").addEventListener("touchstart", shoot);
+document.addEventListener("keydown", e => { if (e.key === " ") shoot(); });
+
+function shoot() {
+  if (!gameRunning) return;
+  document.getElementById("shootSound").play();
+
+  let bullet = document.createElement("div");
   bullet.className = "bullet";
   bullet.style.left = player.offsetLeft + 12 + "px";
   bullet.style.top = player.offsetTop + "px";
-  gameArea.appendChild(bullet);
-  gunSound.play();
+  game.appendChild(bullet);
 
-  let interval = setInterval(() => {
-    bullet.style.top = bullet.offsetTop - 10 + "px";
-
+  let move = setInterval(() => {
+    bullet.style.top = bullet.offsetTop - 6 + "px";
+    enemies.forEach(e => {
+      if (hit(bullet, e)) {
+        e.remove();
+        bullet.remove();
+        score++;
+        updateScore();
+      }
+    });
     if (bullet.offsetTop < 0) {
       bullet.remove();
-      clearInterval(interval);
+      clearInterval(move);
     }
+  }, 20);
+}
 
-    if (collision(bullet, enemy)) {
-      bullet.remove();
-      score++;
-      scoreEl.innerText = score;
-      enemy.style.left = Math.random() * 280 + "px";
-      enemy.style.top = "10px";
-      clearInterval(interval);
+let enemies = [];
+
+function spawnEnemy() {
+  if (!gameRunning) return;
+  let e = document.createElement("div");
+  e.className = "enemy";
+  e.style.left = Math.random() * 290 + "px";
+  e.style.top = "0px";
+  game.appendChild(e);
+  enemies.push(e);
+
+  let move = setInterval(() => {
+    if (!gameRunning) return;
+    e.style.top = e.offsetTop + 1 + "px";
+
+    if (Math.random() < 0.01) enemyShoot(e);
+
+    if (hit(e, player)) {
+      damage();
+      e.remove();
+      clearInterval(move);
     }
   }, 30);
 }
 
-// ENEMY FIRE
-setInterval(() => {
-  if (!gameRunning) return;
+function enemyShoot(enemy) {
+  let b = document.createElement("div");
+  b.className = "bullet enemyBullet";
+  b.style.left = enemy.offsetLeft + "px";
+  b.style.top = enemy.offsetTop + "px";
+  game.appendChild(b);
 
-  const eBullet = document.createElement("div");
-  eBullet.className = "bullet enemyBullet";
-  eBullet.style.left = enemy.offsetLeft + 12 + "px";
-  eBullet.style.top = enemy.offsetTop + 20 + "px";
-  gameArea.appendChild(eBullet);
-
-  let i = setInterval(() => {
-    eBullet.style.top = eBullet.offsetTop + 6 + "px";
-
-    if (collision(eBullet, player)) {
-      eBullet.remove();
-      health -= 20;
-      healthBar.style.width = health + "%";
-      clearInterval(i);
-
-      if (health <= 0) gameOver();
+  let mv = setInterval(() => {
+    b.style.top = b.offsetTop + 5 + "px";
+    if (hit(b, player)) {
+      damage();
+      b.remove();
+      clearInterval(mv);
     }
-  }, 40);
-}, 1200);
-
-// COLLISION
-function collision(a, b) {
-  return (
-    a.offsetLeft < b.offsetLeft + 30 &&
-    a.offsetLeft + 5 > b.offsetLeft &&
-    a.offsetTop < b.offsetTop + 30 &&
-    a.offsetTop + 10 > b.offsetTop
-  );
+    if (b.offsetTop > 420) {
+      b.remove();
+      clearInterval(mv);
+    }
+  }, 20);
 }
 
-// GAME OVER
-function gameOver() {
+function damage() {
+  health--;
+  healthEl.innerText = "❤️".repeat(health);
+  if (health <= 0) endGame();
+}
+
+function endGame() {
   gameRunning = false;
-  outSound.play();
-  document.getElementById("gameOver").style.display = "block";
+  document.getElementById("outSound").play();
+  gameOverBox.style.display = "block";
 
-  if (score > highScore) {
-    localStorage.setItem("highScore", score);
-  }
+  // (and enemy is firing, player firing and when the game over then writ tere bas ki bat nahi hai jaker padhai ker yehe link khol and sound of out)
 }
 
-// RESTART
 function restartGame() {
   location.reload();
 }
 
-/*
-(FUTURE UPGRADE)
-- 🤖 Smart Enemy AI
-- 🗺 Levels & Maps
-- 🌐 Multiplayer
-- 📱 Better Joystick UI
-*/
+function updateScore() {
+  high = Math.max(score, high);
+  localStorage.setItem("high", high);
+  scoreEl.innerText = `Score: ${score} | High: ${high}`;
+}
+
+function hit(a, b) {
+  return a.offsetLeft < b.offsetLeft + 30 &&
+         a.offsetLeft + 10 > b.offsetLeft &&
+         a.offsetTop < b.offsetTop + 30 &&
+         a.offsetTop + 10 > b.offsetTop;
+}
+
+setInterval(spawnEnemy, 1200);

@@ -1,18 +1,18 @@
-body {
+ body {
   text-align: center;
-  font-family: Arial;
   background: #111;
   color: white;
+  font-family: Arial;
 }
 
-#gameArea {
+#game {
   width: 320px;
   height: 420px;
   background: #222;
   margin: auto;
   position: relative;
   overflow: hidden;
-  border: 2px solid white;
+  border: 3px solid white;
 }
 
 #player {
@@ -29,13 +29,11 @@ body {
   height: 30px;
   background: red;
   position: absolute;
-  top: 10px;
-  left: 50px;
 }
 
 .bullet {
-  width: 5px;
-  height: 10px;
+  width: 6px;
+  height: 12px;
   background: yellow;
   position: absolute;
 }
@@ -44,26 +42,12 @@ body {
   background: orange;
 }
 
-#joystick button {
+#joystick button, #fireBtn {
+  font-size: 18px;
   margin: 5px;
-  padding: 10px;
-  font-size: 16px;
-}
-
-#health {
-  width: 200px;
-  border: 1px solid white;
-  margin: auto;
-}
-
-#healthBar {
-  height: 15px;
-  width: 100%;
-  background: green;
 }
 
 #gameOver {
   display: none;
   color: red;
-  font-size: 18px;
 }

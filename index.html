@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html>
 <head>
   <title>Shooting Game</title>
@@ -6,41 +6,31 @@
 </head>
 <body>
 
-<h2>🔥 Shooting Game</h2>
+<h2 id="score">Score: 0 | High: 0</h2>
+<div id="health">❤️❤️❤️</div>
 
-<div id="info">
-  Score: <span id="score">0</span> |
-  High Score: <span id="highScore">0</span>
-</div>
-
-<div id="health">
-  Health: <div id="healthBar"></div>
-</div>
-
-<div id="gameArea">
+<div id="game">
   <div id="player"></div>
-  <div class="enemy"></div>
 </div>
 
 <div id="joystick">
-  <button id="left">⬅</button>
-  <button id="up">⬆</button>
-  <button id="down">⬇</button>
-  <button id="right">➡</button>
-  <button id="fire">🔥</button>
+  <button data-dir="up">⬆</button>
+  <button data-dir="left">⬅</button>
+  <button data-dir="down">⬇</button>
+  <button data-dir="right">➡</button>
 </div>
+
+<button id="fireBtn">🔥 FIRE</button>
 
 <div id="gameOver">
-  <p>TERE BAS KI BAAT NAHI HAI<br>JAAKAR PADHAI KAR 
-  <br><a href="https://viveklearn.vercel.app/">And open this link </a>
-  </p>
-  <button onclick="restartGame()">Restart</button>
+  <p>tere bas ki bat nahi hai<br>jaker padhai ker<br>
+  <a href="https://viveklearn.vercel.app/" target="_blank">yehe link khol</a></p>
+  <button onclick="restartGame()">RESTART</button>
 </div>
 
-<audio id="gunSound" src="https://actions.google.com/sounds/v1/weapons/pistol_shot.ogg"></audio>
-<audio id="outSound" src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg"></audio>
+<audio id="shootSound" src="https://actions.google.com/sounds/v1/weapons/medium_gunshot.ogg"></audio>
+<audio id="outSound" src="https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg"></audio>
 
 <script src="script.js"></script>
-
 </body>
 </html>
