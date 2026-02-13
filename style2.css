@@ -1,0 +1,50 @@
+body {
+  background: #111;
+  color: white;
+  text-align: center;
+  font-family: Arial;
+}
+
+#game {
+  width: 360px;
+  height: 500px;
+  border: 2px solid white;
+  margin: auto;
+  position: relative;
+  background: #222;
+  overflow: hidden;
+}
+
+#player {
+  width: 40px;
+  height: 40px;
+  background: lime;
+  position: absolute;
+  bottom: 10px;
+  left: 160px;
+}
+
+.enemy {
+  width: 35px;
+  height: 35px;
+  background: red;
+  position: absolute;
+  top: 0;
+}
+
+.bullet {
+  width: 6px;
+  height: 12px;
+  background: yellow;
+  position: absolute;
+}
+
+#controls button {
+  font-size: 20px;
+  padding: 10px;
+  margin: 5px;
+}
+
+#restart {
+  margin-top: 10px;
+}
