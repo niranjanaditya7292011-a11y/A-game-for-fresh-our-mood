@@ -1,120 +1,116 @@
-const game = document.getElementById("game");
 const player = document.getElementById("player");
+const enemy = document.querySelector(".enemy");
+const gameArea = document.getElementById("gameArea");
+
+const scoreEl = document.getElementById("score");
+const highScoreEl = document.getElementById("highScore");
+const healthBar = document.getElementById("healthBar");
+
+const gunSound = document.getElementById("gunSound");
+const outSound = document.getElementById("outSound");
 
 let score = 0;
+let highScore = localStorage.getItem("highScore") || 0;
 let health = 100;
-let time = 60;
-let highScore = localStorage.getItem("high") || 0;
+let gameRunning = true;
 
-document.getElementById("highScore").innerText = highScore;
+highScoreEl.innerText = highScore;
 
-let playerX = 160;
-let gameOver = false;
+// PLAYER MOVE (KEYBOARD)
+document.addEventListener("keydown", e => {
+  if (!gameRunning) return;
+  let x = player.offsetLeft;
+  let y = player.offsetTop;
 
-// 🔫 SHOOT
-function shoot() {
-  if (gameOver) return;
+  if (e.key === "ArrowLeft" && x > 0) player.style.left = x - 10 + "px";
+  if (e.key === "ArrowRight" && x < 290) player.style.left = x + 10 + "px";
+  if (e.key === "ArrowUp" && y > 0) player.style.top = y - 10 + "px";
+  if (e.key === "ArrowDown" && y < 390) player.style.top = y + 10 + "px";
+  if (e.key === " ") fireBullet();
+});
 
+// PLAYER FIRE
+function fireBullet() {
   const bullet = document.createElement("div");
   bullet.className = "bullet";
-  bullet.style.left = playerX + 17 + "px";
-  bullet.style.bottom = "50px";
-  game.appendChild(bullet);
+  bullet.style.left = player.offsetLeft + 12 + "px";
+  bullet.style.top = player.offsetTop + "px";
+  gameArea.appendChild(bullet);
+  gunSound.play();
 
-  document.getElementById("gunSound").play();
+  let interval = setInterval(() => {
+    bullet.style.top = bullet.offsetTop - 10 + "px";
 
-  let move = setInterval(() => {
-    bullet.style.bottom =
-      parseInt(bullet.style.bottom) + 10 + "px";
-
-    document.querySelectorAll(".enemy").forEach(enemy => {
-      if (
-        bullet.getBoundingClientRect().top <
-        enemy.getBoundingClientRect().bottom &&
-        bullet.getBoundingClientRect().left <
-        enemy.getBoundingClientRect().right &&
-        bullet.getBoundingClientRect().right >
-        enemy.getBoundingClientRect().left
-      ) {
-        enemy.remove();
-        bullet.remove();
-        score++;
-        document.getElementById("score").innerText = score;
-      }
-    });
-
-    if (parseInt(bullet.style.bottom) > 500) {
+    if (bullet.offsetTop < 0) {
       bullet.remove();
-      clearInterval(move);
+      clearInterval(interval);
+    }
+
+    if (collision(bullet, enemy)) {
+      bullet.remove();
+      score++;
+      scoreEl.innerText = score;
+      enemy.style.left = Math.random() * 280 + "px";
+      enemy.style.top = "10px";
+      clearInterval(interval);
     }
   }, 30);
 }
 
-// 🤖 ENEMY AI
-function spawnEnemy() {
-  if (gameOver) return;
+// ENEMY FIRE
+setInterval(() => {
+  if (!gameRunning) return;
 
-  const enemy = document.createElement("div");
-  enemy.className = "enemy";
-  enemy.style.left = Math.random() * 320 + "px";
-  game.appendChild(enemy);
+  const eBullet = document.createElement("div");
+  eBullet.className = "bullet enemyBullet";
+  eBullet.style.left = enemy.offsetLeft + 12 + "px";
+  eBullet.style.top = enemy.offsetTop + 20 + "px";
+  gameArea.appendChild(eBullet);
 
-  let fall = setInterval(() => {
-    enemy.style.top =
-      (enemy.offsetTop || 0) + 3 + "px";
+  let i = setInterval(() => {
+    eBullet.style.top = eBullet.offsetTop + 6 + "px";
 
-    if (enemy.offsetTop > 460) {
+    if (collision(eBullet, player)) {
+      eBullet.remove();
       health -= 20;
-      document.getElementById("health").innerText = health;
-      enemy.remove();
-      clearInterval(fall);
+      healthBar.style.width = health + "%";
+      clearInterval(i);
 
-      if (health <= 0) endGame();
+      if (health <= 0) gameOver();
     }
   }, 40);
+}, 1200);
+
+// COLLISION
+function collision(a, b) {
+  return (
+    a.offsetLeft < b.offsetLeft + 30 &&
+    a.offsetLeft + 5 > b.offsetLeft &&
+    a.offsetTop < b.offsetTop + 30 &&
+    a.offsetTop + 10 > b.offsetTop
+  );
 }
 
-// ⏱ TIMER
-let timer = setInterval(() => {
-  if (gameOver) return;
-  time--;
-  document.getElementById("time").innerText = time;
-  if (time <= 0) endGame();
-}, 1000);
+// GAME OVER
+function gameOver() {
+  gameRunning = false;
+  outSound.play();
+  document.getElementById("gameOver").style.display = "block";
 
-// 🕹 KEYBOARD
-document.addEventListener("keydown", e => {
-  if (e.key === "ArrowLeft" && playerX > 0) playerX -= 20;
-  if (e.key === "ArrowRight" && playerX < 320) playerX += 20;
-  if (e.key === " ") shoot();
-  player.style.left = playerX + "px";
-});
-
-// 📱 MOBILE CONTROLS
-left.onclick = () => { if (playerX > 0) playerX -= 20; player.style.left = playerX + "px"; };
-right.onclick = () => { if (playerX < 320) playerX += 20; player.style.left = playerX + "px"; };
-shootBtn = document.getElementById("shoot");
-shootBtn.onclick = shoot;
-
-// 🔁 SPAWN LOOP
-setInterval(spawnEnemy, 1200);
-
-// 💀 GAME OVER
-function endGame() {
-  gameOver = true;
   if (score > highScore) {
-    localStorage.setItem("high", score);
+    localStorage.setItem("highScore", score);
   }
-
-  game.innerHTML = `
-    <h3>GAME OVER</h3>
-    <p>tere bas ki baat nahi hai 😎</p>
-    <p>ja kar padhai kar</p>
-    <a href="https://viveklearn.vercel.app/ " target="_blank" style="color:yellow">
-      yehe link khol
-    </a>
-  `;
 }
 
-// 🔄 RESTART
-restart.onclick = () => location.reload();
+// RESTART
+function restartGame() {
+  location.reload();
+}
+
+/*
+(FUTURE UPGRADE)
+- 🤖 Smart Enemy AI
+- 🗺 Levels & Maps
+- 🌐 Multiplayer
+- 📱 Better Joystick UI
+*/
