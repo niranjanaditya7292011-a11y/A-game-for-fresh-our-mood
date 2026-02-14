@@ -1,35 +1,39 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
-  <title>Shooting Game</title>
-  <link rel="stylesheet" href="style .css">
+    <title>Jet Shooter Game</title>
+    <link rel="stylesheet" href="style .css">
 </head>
 <body>
 
-<h2 id="score">Score: 0 | High: 0</h2>
-<div id="health">❤️❤️❤️</div>
+<h2>🔥 Jet Shooting Game 🔥</h2>
 
-<div id="game">
-  <div id="player"></div>
+<div id="gameArea">
+    <img id="player" src="https://i.imgur.com/6XbKQxK.png">
 </div>
 
-<div id="joystick">
-  <button data-dir="up">⬆</button>
-  <button data-dir="left">⬅</button>
-  <button data-dir="down">⬇</button>
-  <button data-dir="right">➡</button>
+<div id="ui">
+    ❤️ Health: <span id="health">100</span>
+    🏆 Score: <span id="score">0</span>
+    ⭐ High Score: <span id="highScore">0</span>
 </div>
 
-<button id="fireBtn">🔥 FIRE</button>
-
-<div id="gameOver">
-  <p>tere bas ki bat nahi hai<br>jaker padhai ker<br>
-  <a href="https://viveklearn.vercel.app/" target="_blank">yehe link khol</a></p>
-  <button onclick="restartGame()">RESTART</button>
+<div id="controls">
+    <button id="up">⬆</button>
+    <button id="left">⬅</button>
+    <button id="fire">🔫</button>
+    <button id="right">➡</button>
+    <button id="down">⬇</button>
 </div>
 
-<audio id="shootSound" src="https://actions.google.com/sounds/v1/weapons/medium_gunshot.ogg"></audio>
-<audio id="outSound" src="https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg"></audio>
+<div id="gameOverScreen">
+    <h1>Tere bas ki bat nahi hai 😎</h1>
+    <p><a href="https://viveklearn.vercel.app/"> padhai kar</a></p>
+    <button id="restartBtn">Restart Game</button>
+</div>
+
+<audio id="gunSound" src="https://assets.mixkit.co/sfx/preview/mixkit-short-laser-gun-shot-1670.mp3"></audio>
+<audio id="outSound" src="https://assets.mixkit.co/sfx/preview/mixkit-player-losing-or-failing-2042.mp3"></audio>
 
 <script src="script.js"></script>
 </body>

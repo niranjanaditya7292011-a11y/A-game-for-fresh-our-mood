@@ -1,53 +1,72 @@
- body {
-  text-align: center;
-  background: #111;
-  color: white;
-  font-family: Arial;
+body {
+    text-align: center;
+    background: black;
+    color: white;
+    font-family: Arial;
 }
 
-#game {
-  width: 320px;
-  height: 420px;
-  background: #222;
-  margin: auto;
-  position: relative;
-  overflow: hidden;
-  border: 3px solid white;
+#gameArea {
+    width: 400px;
+    height: 500px;
+    border: 3px solid white;
+    margin: auto;
+    position: relative;
+    overflow: hidden;
+    background: #111;
 }
 
 #player {
-  width: 30px;
-  height: 30px;
-  background: lime;
-  position: absolute;
-  bottom: 10px;
-  left: 145px;
+    width: 60px;
+    position: absolute;
+    bottom: 10px;
+    left: 170px;
 }
 
 .enemy {
-  width: 30px;
-  height: 30px;
-  background: red;
-  position: absolute;
+    width: 60px;
+    position: absolute;
 }
 
 .bullet {
-  width: 6px;
-  height: 12px;
-  background: yellow;
-  position: absolute;
+    width: 6px;
+    height: 15px;
+    background: yellow;
+    position: absolute;
 }
 
 .enemyBullet {
-  background: orange;
+    width: 6px;
+    height: 15px;
+    background: red;
+    position: absolute;
 }
 
-#joystick button, #fireBtn {
-  font-size: 18px;
-  margin: 5px;
+#controls {
+    margin-top: 10px;
 }
 
-#gameOver {
-  display: none;
-  color: red;
+#controls button {
+    padding: 15px;
+    margin: 5px;
+    font-size: 20px;
+    border-radius: 10px;
+}
+
+#restartBtn {
+    padding: 15px 30px;
+    font-size: 20px;
+    border-radius: 10px;
+    background: red;
+    color: white;
+    border: none;
+}
+
+#gameOverScreen {
+    position: absolute;
+    top: 150px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: none;
+    background: black;
+    padding: 20px;
 }

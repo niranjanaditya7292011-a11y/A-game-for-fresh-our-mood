@@ -1,136 +1,157 @@
- const game = document.getElementById("game");
+let killCount = 0;
 const player = document.getElementById("player");
-const scoreEl = document.getElementById("score");
-const healthEl = document.getElementById("health");
-const gameOverBox = document.getElementById("gameOver");
+const gameArea = document.getElementById("gameArea");
+const scoreDisplay = document.getElementById("score");
+const highScoreDisplay = document.getElementById("highScore");
+const healthDisplay = document.getElementById("health");
+const gameOverScreen = document.getElementById("gameOverScreen");
+const restartBtn = document.getElementById("restartBtn");
+
+const gunSound = document.getElementById("gunSound");
+const outSound = document.getElementById("outSound");
 
 let score = 0;
-let high = localStorage.getItem("high") || 0;
-let health = 3;
-let gameRunning = true;
+let health = 100;
+let level = 1;
+let highScore = localStorage.getItem("highScore") || 0;
+highScoreDisplay.innerText = highScore;
+
 let keys = {};
 
 document.addEventListener("keydown", e => keys[e.key] = true);
 document.addEventListener("keyup", e => keys[e.key] = false);
 
-function movePlayer() {
-  if (!gameRunning) return;
-  let x = player.offsetLeft;
-  let y = player.offsetTop;
+// Mobile buttons
+["up","down","left","right"].forEach(id=>{
+    document.getElementById(id).ontouchstart = () => keys[id]=true;
+    document.getElementById(id).ontouchend = () => keys[id]=false;
+});
 
-  if (keys["ArrowLeft"] && x > 0) player.style.left = x - 4 + "px";
-  if (keys["ArrowRight"] && x < 290) player.style.left = x + 4 + "px";
-  if (keys["ArrowUp"] && y > 0) player.style.top = y - 4 + "px";
-  if (keys["ArrowDown"] && y < 390) player.style.top = y + 4 + "px";
+document.getElementById("fire").ontouchstart = fireBullet;
+
+let playerX = 170;
+let playerY = 430;
+
+function movePlayer(){
+    if(keys["ArrowLeft"] || keys["left"]) playerX -=5;
+    if(keys["ArrowRight"] || keys["right"]) playerX +=5;
+    if(keys["ArrowUp"] || keys["up"]) playerY -=5;
+    if(keys["ArrowDown"] || keys["down"]) playerY +=5;
+
+    // Stop going outside box
+    playerX = Math.max(0, Math.min(340, playerX));
+    playerY = Math.max(0, Math.min(440, playerY));
+
+    player.style.left = playerX + "px";
+    player.style.top = playerY + "px";
 }
 
-setInterval(movePlayer, 20);
+function fireBullet(){
+    gunSound.play();
+    let bullet = document.createElement("div");
+    bullet.classList.add("bullet");
+    bullet.style.left = playerX+27+"px";
+    bullet.style.top = playerY+"px";
+    gameArea.appendChild(bullet);
 
-document.getElementById("fireBtn").addEventListener("touchstart", shoot);
-document.addEventListener("keydown", e => { if (e.key === " ") shoot(); });
+    let interval = setInterval(()=>{
+        bullet.style.top = bullet.offsetTop - 10 + "px";
 
-function shoot() {
-  if (!gameRunning) return;
-  document.getElementById("shootSound").play();
+        document.querySelectorAll(".enemy").forEach(enemy=>{
+            if(checkCollision(bullet,enemy)){
+                enemy.remove();
+                bullet.remove();
+                score+=10;
+                scoreDisplay.innerText = score;
+                clearInterval(interval);
+            }
+        });
 
-  let bullet = document.createElement("div");
-  bullet.className = "bullet";
-  bullet.style.left = player.offsetLeft + 12 + "px";
-  bullet.style.top = player.offsetTop + "px";
-  game.appendChild(bullet);
+        if(bullet.offsetTop <0){
+            bullet.remove();
+            clearInterval(interval);
+        }
+    },30);
+}
 
-  let move = setInterval(() => {
-    bullet.style.top = bullet.offsetTop - 6 + "px";
-    enemies.forEach(e => {
-      if (hit(bullet, e)) {
-        e.remove();
-        bullet.remove();
-        score++;
-        updateScore();
-      }
-    });
-    if (bullet.offsetTop < 0) {
-      bullet.remove();
-      clearInterval(move);
+function spawnEnemy(){
+    let enemy = document.createElement("img");
+    enemy.src="https://i.imgur.com/9XnKQ7G.png";
+    enemy.classList.add("enemy");
+    enemy.style.left = Math.random()*340+"px";
+    enemy.style.top = "0px";
+    gameArea.appendChild(enemy);
+
+    let move = setInterval(()=>{
+        enemy.style.top = enemy.offsetTop + (2+level) + "px";
+
+        // Enemy firing
+        if(Math.random()<0.02){
+            enemyFire(enemy);
+        }
+
+        if(checkCollision(enemy,player)){
+            gameOver();
+        }
+
+        if(enemy.offsetTop >500){
+            enemy.remove();
+            clearInterval(move);
+        }
+    },30);
+}
+
+function enemyFire(enemy){
+    let bullet = document.createElement("div");
+    bullet.classList.add("enemyBullet");
+    bullet.style.left = enemy.offsetLeft+27+"px";
+    bullet.style.top = enemy.offsetTop+"px";
+    gameArea.appendChild(bullet);
+
+    let interval = setInterval(()=>{
+        bullet.style.top = bullet.offsetTop + 7 + "px";
+
+        if(checkCollision(bullet,player)){
+            health-=10;
+            healthDisplay.innerText = health;
+            bullet.remove();
+            clearInterval(interval);
+            if(health<=0) gameOver();
+        }
+
+        if(bullet.offsetTop >500){
+            bullet.remove();
+            clearInterval(interval);
+        }
+    },30);
+}
+
+function checkCollision(a,b){
+    let rect1=a.getBoundingClientRect();
+    let rect2=b.getBoundingClientRect();
+    return !(rect1.top>rect2.bottom ||
+             rect1.bottom<rect2.top ||
+             rect1.right<rect2.left ||
+             rect1.left>rect2.right);
+}
+
+function gameOver(){
+    outSound.play();
+    gameOverScreen.style.display="block";
+
+    if(score>highScore){
+        localStorage.setItem("highScore",score);
     }
-  }, 20);
 }
 
-let enemies = [];
-
-function spawnEnemy() {
-  if (!gameRunning) return;
-  let e = document.createElement("div");
-  e.className = "enemy";
-  e.style.left = Math.random() * 290 + "px";
-  e.style.top = "0px";
-  game.appendChild(e);
-  enemies.push(e);
-
-  let move = setInterval(() => {
-    if (!gameRunning) return;
-    e.style.top = e.offsetTop + 1 + "px";
-
-    if (Math.random() < 0.01) enemyShoot(e);
-
-    if (hit(e, player)) {
-      damage();
-      e.remove();
-      clearInterval(move);
-    }
-  }, 30);
+restartBtn.onclick = ()=>{
+    location.reload();
 }
 
-function enemyShoot(enemy) {
-  let b = document.createElement("div");
-  b.className = "bullet enemyBullet";
-  b.style.left = enemy.offsetLeft + "px";
-  b.style.top = enemy.offsetTop + "px";
-  game.appendChild(b);
+setInterval(movePlayer,20);
+setInterval(spawnEnemy,1500);
 
-  let mv = setInterval(() => {
-    b.style.top = b.offsetTop + 5 + "px";
-    if (hit(b, player)) {
-      damage();
-      b.remove();
-      clearInterval(mv);
-    }
-    if (b.offsetTop > 420) {
-      b.remove();
-      clearInterval(mv);
-    }
-  }, 20);
-}
-
-function damage() {
-  health--;
-  healthEl.innerText = "❤️".repeat(health);
-  if (health <= 0) endGame();
-}
-
-function endGame() {
-  gameRunning = false;
-  document.getElementById("outSound").play();
-  gameOverBox.style.display = "block";
-
-  // (and enemy is firing, player firing and when the game over then writ tere bas ki bat nahi hai jaker padhai ker yehe link khol and sound of out)
-}
-
-function restartGame() {
-  location.reload();
-}
-
-function updateScore() {
-  high = Math.max(score, high);
-  localStorage.setItem("high", high);
-  scoreEl.innerText = `Score: ${score} | High: ${high}`;
-}
-
-function hit(a, b) {
-  return a.offsetLeft < b.offsetLeft + 30 &&
-         a.offsetLeft + 10 > b.offsetLeft &&
-         a.offsetTop < b.offsetTop + 30 &&
-         a.offsetTop + 10 > b.offsetTop;
-}
-
-setInterval(spawnEnemy, 1200);
+// Auto fire with space
+document.addEventListener("keydown",e=>{
+    if(e.code==="Space") fireBullet();
+});
