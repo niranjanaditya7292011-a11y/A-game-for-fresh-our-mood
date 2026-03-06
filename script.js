@@ -111,20 +111,17 @@ function enemyFire(enemy){
     let interval = setInterval(()=>{
         bullet.style.top = bullet.offsetTop + 7 + "px";
 
-        if(checkCollision(bullet,player)){
-            health-=10;
-            healthDisplay.innerText = health;
-            bullet.remove();
-            clearInterval(interval);
-            if(health<=0) gameOver();
-        }
+     if(checkCollision(enemy,player)){
+    health -= 20;
+    healthDisplay.innerText = health;
+    enemy.remove();
+    clearInterval(move);
 
-        if(bullet.offsetTop >500){
-            bullet.remove();
-            clearInterval(interval);
-        }
-    },30);
+    if(health <= 0){
+        gameOver();
+    }
 }
+
 
 function checkCollision(a,b){
     let rect1=a.getBoundingClientRect();
